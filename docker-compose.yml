@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  app:
+    image: url-shorter
+    container_name: url-shorter
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./.data/db:/data/db
+    ports:
+      - "27017:27017"

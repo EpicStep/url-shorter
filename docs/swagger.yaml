@@ -1,0 +1,81 @@
+swagger: "2.0"
+info:
+  title: URL Shorter
+  description: URL Shorter API documentation.
+  version: 1.0.0
+tags:
+  - name: short
+    description: Endpoints to Short API.
+host: localhost:3000
+schemes:
+  - http
+  - https
+paths:
+  /api/short:
+    post:
+      summary: Create a short URL.
+      tags:
+        - short
+      produces:
+        - application/json
+      parameters:
+        - name: url
+          description: URL that should be shortened
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+      responses:
+        200:
+          description: Successful creation
+          schema:
+            type: object
+            properties:
+              shorted_url:
+                type: string
+        400:
+          description: Provided URL doesnt look like URL
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: URL already shorted
+          schema:
+            $ref: "#/definitions/Error"
+    get:
+      summary: Get info about shorted URL
+      tags:
+        - short
+      produces:
+        - application/json
+      parameters:
+        - name: code
+          description: URL code
+          required: true
+          in: query
+          type: string
+      responses:
+        200:
+          description: Successful get
+          schema:
+            type: object
+            properties:
+              shorted_url:
+                type: string
+              original_url:
+                type: string
+        404:
+          description: Code not found
+          schema:
+            $ref: "#/definitions/Error"
+
+definitions:
+  Error:
+    type: object
+    properties:
+      error_code:
+        type: integer
+      error_msg:
+        type: string
