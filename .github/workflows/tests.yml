@@ -1,0 +1,25 @@
+name: Tests
+
+on: [ push, pull_request]
+
+env:
+  TEST_CONTAINER_NAME: "test_db"
+  TEST_DB_NAME: "short"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create test db container
+        run: docker run --rm -d -p 27017:27017 --name $(echo $TEST_CONTAINER_NAME) -e MONGODB_DATABASE=$(echo $TEST_DB_NAME) mongo:latest
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+      - name: Kill test db container
+        run: docker stop $(echo $TEST_CONTAINER_NAME)
